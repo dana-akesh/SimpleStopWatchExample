@@ -2,12 +2,10 @@ package edu.cs.birzeit.stopwatch_dana;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnStart;
     private Button btnStop;
     private Button btnReset;
-     TextView txtTime;
+    TextView txtTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,21 +26,23 @@ public class MainActivity extends AppCompatActivity {
         checkInstance(savedInstanceState);
 
         // Initialize the view
+        initializeComponents();
+
+        // Run the timer
+        runTimer();
+
+        // Set the listeners
+        setListeners();
+    }
+
+    private void initializeComponents() {
+        // Initialize the view
         btnStart = findViewById(R.id.btnStart);
         btnStop = findViewById(R.id.btnStop);
         btnReset = findViewById(R.id.btnReset);
         txtTime = findViewById(R.id.txtTimer);
-
-        // Run the timer
-        runTimer();
-        btnStart.setOnClickListener(v -> {
-            onClickStart(v);
-        });
-
-        btnStop.setOnClickListener(v -> onClickStop(v));
-
-        btnReset.setOnClickListener(v -> onClickReset(v));
     }
+
     private void checkInstance(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             seconds = savedInstanceState.getInt("SECONDS");
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onSaveInstanceState( Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("SECONDS", seconds);
         outState.putBoolean("RUNNING", running);
@@ -77,15 +77,24 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Set the listeners
+    private void setListeners() {
+        btnStart.setOnClickListener(v -> onClickStart(v));
+        btnStop.setOnClickListener(v -> onClickStop(v));
+        btnReset.setOnClickListener(v -> onClickReset(v));
+    }
+
     public void onClickStart(View view) {
         running = true;
     }
 
     public void onClickStop(View view) {
         running = false;
+        btnStart.setText("Continue");
     }
 
     public void onClickReset(View view) {
+        btnStart.setText("Start");
         running = false;
         seconds = 0;
     }
